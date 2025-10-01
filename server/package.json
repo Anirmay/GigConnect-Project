@@ -31,13 +31,13 @@
 
 ### What to Do Now
 
-1.  **Update the file:** Replace the code in your local `server/package.json` file.
+1.  **Update the file:** Replace the code in your local `server/package.json` file with the corrected version above.
 2.  **This is the most important step:** You must **push this change to GitHub**.
     * Open your terminal in the `GigConnect-Project` folder.
     * Run the following commands:
         ```bash
         git add .
-        git commit -m "Fix: Set node module type for deployment"
+        git commit -m "Fix: Correct syntax in server package.json"
         git push
         
 
