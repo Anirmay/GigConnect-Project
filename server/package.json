@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
@@ -26,3 +27,17 @@
     "nodemon": "^3.1.2"
   }
 }
+```
+
+### What to Do Now
+
+1.  **Update the file:** Replace the code in your local `server/package.json` file.
+2.  **This is the most important step:** You must **push this change to GitHub**.
+    * Open your terminal in the `GigConnect-Project` folder.
+    * Run the following commands:
+        ```bash
+        git add .
+        git commit -m "Fix: Set node module type for deployment"
+        git push
+        
+
