@@ -323,3 +323,8 @@
 .gig-location {
   color: #6b7280;
 }
+
+.gig-card-link {
+  text-decoration: none; /* Removes the underline */
+  color: inherit;        /* Ensures text color is inherited from parent */
+}

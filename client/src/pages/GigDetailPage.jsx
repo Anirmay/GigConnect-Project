@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 
 const GigDetailPage = () => {
-    const { id } = useParams(); // Get gig ID from the URL
+    const { id } = useParams();
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -13,21 +13,24 @@ const GigDetailPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     
-    // State for the new review form
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
 
     useEffect(() => {
         const fetchGigAndReviews = async () => {
             try {
-                // Fetch both gig details and reviews at the same time
-                const gigRes = await axios.get(`http://localhost:8000/api/gig/${id}`);
-                const reviewRes = await axios.get(`http://localhost:8000/api/review/${id}`);
+                setLoading(true);
+                // Fetch both gig details and reviews at the same time for efficiency
+                const [gigRes, reviewRes] = await Promise.all([
+                    axios.get(`http://localhost:8000/api/gig/${id}`),
+                    axios.get(`http://localhost:8000/api/review/${id}`)
+                ]);
                 
                 setGig(gigRes.data);
                 setReviews(reviewRes.data);
             } catch (err) {
                 setError('Could not fetch data for this gig.');
+                console.error(err);
             } finally {
                 setLoading(false);
             }
@@ -42,11 +45,11 @@ const GigDetailPage = () => {
             return;
         }
         try {
-            const res = await axios.post('http://localhost:8000/api/review/create', 
+            await axios.post('http://localhost:8000/api/review/create', 
                 { gigId: id, rating, comment }, 
                 { withCredentials: true }
             );
-            // After submitting, fetch reviews again to include the username
+            // After submitting, fetch reviews again to include the new one with the username
             const reviewRes = await axios.get(`http://localhost:8000/api/review/${id}`);
             setReviews(reviewRes.data);
             setComment('');
@@ -55,37 +58,37 @@ const GigDetailPage = () => {
             setError('Failed to submit review.');
         }
     };
-
+    
     const handleContact = () => {
         if (gig && gig.userRef) {
-            // Navigate to the messages page and pass the user to chat with in the state
             navigate('/messages', { state: { userToChat: gig.userRef } });
         }
     };
 
-    if (loading) return <p style={{textAlign: 'center', marginTop: '2rem'}}>Loading...</p>;
+    if (loading) return <p style={{textAlign: 'center', marginTop: '2rem'}}>Loading gig details...</p>;
     if (error) return <p style={{ color: 'red', textAlign: 'center', marginTop: '2rem' }}>{error}</p>;
+    // NEW: Added a check to ensure 'gig' is not null before rendering
+    if (!gig) return <p style={{textAlign: 'center', marginTop: '2rem'}}>Gig not found.</p>;
 
     return (
         <div style={pageStyles}>
             {/* Gig Details Section */}
-            {gig && (
-                <div style={cardStyles}>
-                    <h1 style={titleStyles}>{gig.title}</h1>
-                    <p style={detailStyles}><strong>Posted by:</strong> {gig.userRef.username}</p>
-                    <p style={detailStyles}><strong>Category:</strong> {gig.category}</p>
-                    <p style={detailStyles}><strong>Location:</strong> {gig.location}</p>
-                    <p style={detailStyles}><strong>Budget:</strong> ${gig.budget}</p>
-                    <p style={{marginTop: '1rem'}}>{gig.description}</p>
-
-                    {/* NEW: Add Contact Client button */}
-                    {currentUser && currentUser._id !== gig.userRef._id && (
-                        <button onClick={handleContact} style={{...buttonStyles, marginTop: '1rem'}}>
-                            Contact Client
-                        </button>
-                    )}
-                </div>
-            )}
+            <div style={cardStyles}>
+                <h1 style={titleStyles}>{gig.title}</h1>
+                {/* NEW: Added a check for userRef before trying to display it */}
+                {gig.userRef && <p style={detailStyles}><strong>Posted by:</strong> {gig.userRef.username}</p>}
+                <p style={detailStyles}><strong>Category:</strong> {gig.category}</p>
+                <p style={detailStyles}><strong>Location:</strong> {gig.location}</p>
+                <p style={detailStyles}><strong>Budget:</strong> ${gig.budget}</p>
+                <p style={{marginTop: '1rem'}}>{gig.description}</p>
+                
+                {/* Contact Client button */}
+                {currentUser && gig.userRef && currentUser._id !== gig.userRef._id && (
+                    <button onClick={handleContact} style={{...buttonStyles, marginTop: '1rem'}}>
+                        Contact Client
+                    </button>
+                )}
+            </div>
 
             {/* Reviews Section */}
             <div style={cardStyles}>
@@ -121,7 +124,7 @@ const GigDetailPage = () => {
     );
 };
 
-// Styles
+// --- Styles (no changes needed) ---
 const pageStyles = { padding: '2rem', background: '#f9fafb', display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' };
 const cardStyles = { background: 'white', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', width: '100%', maxWidth: '800px' };
 const titleStyles = { fontSize: '2rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem', marginBottom: '1rem' };

@@ -4,7 +4,6 @@ const Conversation = require('../models/conversation.model.js');
 const Message = require('../models/message.model.js');
 const router = express.Router();
 
-// SEND A MESSAGE
 router.post('/send/:id', verifyToken, async (req, res) => {
     try {
         const { message } = req.body;
@@ -23,23 +22,30 @@ router.post('/send/:id', verifyToken, async (req, res) => {
 
         await Promise.all([conversation.save(), newMessage.save()]);
 
-        // --- REAL-TIME LOGIC ---
         const receiverSocketId = req.getReceiverSocketId(receiverId);
         if (receiverSocketId) {
-            // If the receiver is online, send the message to them directly
             req.io.to(receiverSocketId).emit("newMessage", newMessage);
         }
 
         res.status(201).json(newMessage);
     } catch (error) {
-        console.log("Error in sendMessage controller: ", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
 });
 
-// GET MESSAGES BETWEEN TWO USERS
 router.get('/:id', verifyToken, async (req, res) => {
-    // ... your existing code to get messages ...
+    try {
+        const { id: userToChatId } = req.params;
+        const senderId = req.user.id;
+        const conversation = await Conversation.findOne({
+            participants: { $all: [senderId, userToChatId] },
+        }).populate("messages");
+
+        if (!conversation) return res.status(200).json([]);
+        res.status(200).json(conversation.messages);
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error" });
+    }
 });
 
 module.exports = router;

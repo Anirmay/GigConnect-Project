@@ -12,10 +12,7 @@ const verifyToken = (req, res, next) => {
             return res.status(403).json({ message: "Forbidden: Token is not valid" });
         }
         
-        // This line attaches the user's info to the request.
         req.user = decoded; 
-        
-        // This is the most important line. It tells the server to continue.
         next(); 
     });
 };

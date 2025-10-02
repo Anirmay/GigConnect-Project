@@ -39,9 +39,9 @@ const MessageContainer = ({ selectedUser }) => {
         }
     }, [socket, selectedUser]);
 
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+    // useEffect(() => {
+    //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // }, [messages]);
 
     const handleSendMessage = async (e) => {
         e.preventDefault();

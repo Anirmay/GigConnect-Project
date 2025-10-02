@@ -2,23 +2,23 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import AuthPage from './components/AuthPage';
 import HomePage from './pages/HomePage';
-// import Layout from './components/Layout';
+import AuthPage from './components/AuthPage';
 import CreateGigPage from './pages/CreateGigPage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage'; // NEW
-import ResetPasswordPage from './pages/ResetPasswordPage'; // NEW
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
 import GigDetailPage from './pages/GigDetailPage';
 import DashboardPage from './pages/DashboardPage';
 import './App.css';
+import FindTalentPage from './pages/FindTalentPage'; // Import the new page
 
 const AppLayout = () => (
   <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
     <Header />
     <main style={{ flex: 1 }}>
-      <Outlet /> {/* Child routes will render here */}
+      <Outlet />
     </main>
     <Footer />
   </div>
@@ -28,7 +28,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Routes WITH the Header and Footer */}
         <Route path="/" element={<AppLayout />}>
           <Route index element={<HomePage />} />
           <Route path="/post-gig" element={<CreateGigPage />} />
@@ -38,9 +37,9 @@ export default function App() {
           <Route path="/messages" element={<ChatPage />} />
           <Route path="/gig/:id" element={<GigDetailPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/find-talent" element={<FindTalentPage />} /> {/* Add the find talent route */}
         </Route>
         
-        {/* Route WITHOUT the Header and Footer */}
         <Route path="/auth" element={<AuthPage />} />
       </Routes>
     </BrowserRouter>
