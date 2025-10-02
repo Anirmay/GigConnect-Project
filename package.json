@@ -32,14 +32,15 @@
 }
 ```
 
-#### 2. Push the Fix to GitHub
-After you have saved the corrected file, open your terminal in the `GigConnect-Project` folder and run these three commands, one by one:
-```bash
-git add .
-```
-```bash
-git commit -m "Final attempt: Add build script to root package.json"
-```
-```bash
-git push
+### What to Do Now
+
+1.  **Update the file:** Replace the code in your local `package.json` file with the corrected version above.
+2.  **This is the most important step:** You must **push this change to GitHub**.
+    * Open your terminal in the `GigConnect-Project` folder.
+    * Run the following commands:
+        ```bash
+        git add .
+        git commit -m "Fix: Correct syntax in root package.json"
+        git push
+        
 
