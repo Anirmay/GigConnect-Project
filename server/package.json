@@ -33,12 +33,12 @@
 ```
 
 #### 2. Push the Fix to GitHub
-After you have saved the corrected file, open your terminal in the `GigConnect-Project` folder and run these three commands:
+After you have saved the corrected file, open your terminal in the `GigConnect-Project` folder and run these three commands, one by one:
 ```bash
 git add .
 ```
 ```bash
-git commit -m "Add build script to root package.json"
+git commit -m "Final attempt: Add build script to root package.json"
 ```
 ```bash
 git push
