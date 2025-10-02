@@ -1,13 +1,15 @@
 {
-  "name": "server",
+  "name": "gigconnect-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "A MERN stack freelance marketplace.",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "server": "nodemon index.js",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "build": "cd client && npm install && npm run build"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +26,20 @@
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.1.2"
   }
 }
+```
+
+#### 2. Push the Fix to GitHub
+After you have saved the corrected file, open your terminal in the `GigConnect-Project` folder and run these three commands, one by one:
+```bash
+git add .
+```
+```bash
+git commit -m "Final attempt: Add build script to root package.json"
+```
+```bash
+git push
 
