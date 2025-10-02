@@ -27,17 +27,4 @@
     "nodemon": "^3.1.2"
   }
 }
-```
-
-#### **2. Push the Fix to GitHub**
-
-After you have updated the file, open a terminal in VS Code and run these three commands:
-```bash
-git add .
-```
-```bash
-git commit -m "Final fix for server package.json"
-```
-```bash
-git push
 
