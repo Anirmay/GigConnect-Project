@@ -328,3 +328,33 @@
   text-decoration: none; /* Removes the underline */
   color: inherit;        /* Ensures text color is inherited from parent */
 }
+.greeting-box {
+  border: 2px solid #3b82f6;   /* same blue as theme */
+  border-radius: 12px;
+  padding: 2rem;
+  background: #f9fafb;         /* light gray background */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin: 2rem auto;
+  max-width: 800px;
+}
+
+/* Reuse section-title styling but tweak */
+.greeting-title {
+  margin-bottom: 1rem;
+}
+
+.greeting-title .hi-text {
+  color: #111827;   /* keep "Hi" black */
+}
+
+.greeting-title .role-text {
+  color: #4f46e5;   /* match On-Demand. purple-blue */
+  font-weight: bold;
+}
+
+/* Paragraph tweaks */
+.greeting-subtitle {
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
