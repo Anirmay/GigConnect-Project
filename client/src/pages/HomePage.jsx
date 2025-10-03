@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 // --- ICONS ---
 const SearchIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{height: '1.25rem', width: '1.25rem', color: '#9ca3af'}}> <circle cx="11" cy="11" r="8"></circle> <line x1="21" y1="21" x2="16.65" y2="16.65"></line> </svg> );
@@ -9,7 +10,7 @@ const UsersIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" hei
 const CreditCardIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{height: '2rem', width: '2rem', color: '#4f46e5'}}> <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect> <line x1="1" y1="10" x2="23" y2="10"></line> </svg> );
 
 const HomePage = () => {
-    // NEW: Added "All" to the beginning of the categories array
+    const { currentUser } = useContext(AuthContext);
     const popularCategories = ["All", "Web Development", "Graphic Design", "Writing & Translation", "Video & Animation", "Digital Marketing"];
     const navigate = useNavigate();
     const location = useLocation();
@@ -18,6 +19,7 @@ const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [loginMessage, setLoginMessage] = useState(''); // <-- Added for the login prompt
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
@@ -28,7 +30,7 @@ const HomePage = () => {
             try {
                 setLoading(true);
                 const response = await axios.get(`http://localhost:8000/api/gig${location.search}`);
-                setGigs(response.data);
+                setGigs(response.data.slice(0, 6)); // <-- Show max 6 gigs on homepage
                 setError(null);
             } catch (err) {
                 setError('Could not fetch gigs.');
@@ -44,23 +46,36 @@ const HomePage = () => {
         e.preventDefault();
         const urlParams = new URLSearchParams();
         urlParams.set('searchTerm', searchTerm);
-        navigate(`/?${urlParams.toString()}`);
+        navigate(`/find-work?${urlParams.toString()}`); // <-- Navigate to FindWorkPage on search
     };
 
-    // NEW: Updated function to handle the "All" case
     const handleCategoryClick = (category) => {
-        if (category === 'All') {
-            // If "All" is clicked, navigate to the base URL to clear all filters
-            navigate('/');
-        } else {
-            const urlParams = new URLSearchParams();
+        const urlParams = new URLSearchParams();
+        if (category !== 'All') {
             urlParams.set('category', category);
-            navigate(`/?${urlParams.toString()}`);
+        }
+        navigate(`/find-work?${urlParams.toString()}`); // <-- Navigate to FindWorkPage on category click
+    };
+    
+    // --- THIS IS THE NEW LOGIC ---
+    const handleGigClick = (e) => {
+        if (!currentUser) {
+            e.preventDefault(); // Prevent navigation if not logged in
+            setLoginMessage('You must be logged in to view gig details.');
+            setTimeout(() => {
+                setLoginMessage('');
+            }, 3000); // Hide message after 3 seconds
         }
     };
 
     return (
         <main className="main-container">
+            {loginMessage && (
+                <div style={{...messageStyles, top: '90px'}}> {/* <-- Added message display */}
+                    {loginMessage}
+                </div>
+            )}
+
             {/* Hero Section */}
             <section className="hero-section">
                 <div className="container text-center">
@@ -81,7 +96,6 @@ const HomePage = () => {
                     </form>
                     <div className="popular-categories">
                         <span>Popular:</span>
-                        {/* This will now include the "All" button */}
                         {popularCategories.map(cat => (
                             <button key={cat} onClick={() => handleCategoryClick(cat)} className="category-tag">
                                 {cat}
@@ -91,35 +105,38 @@ const HomePage = () => {
                 </div>
             </section>
 
-            {/* Recently Posted Gigs Section */}
-            <section className="section">
-                <div className="container">
-                    <h2 className="section-title text-center">Available Gigs</h2>
-                    {loading && <p className="text-center">Loading gigs...</p>}
-                    {error && <p className="text-center" style={{color: 'red'}}>{error}</p>}
-                    {!loading && !error && (
-                        <div className="gigs-grid">
-                            {gigs.length > 0 ? (
-                                gigs.map(gig => (
-                                    <Link to={`/gig/${gig._id}`} key={gig._id} className="gig-card-link">
-                                        <div className="gig-card">
-                                            <h3 className="gig-title">{gig.title}</h3>
-                                            <p className="gig-category">{gig.category}</p>
-                                            <p className="gig-description">{gig.description.substring(0, 100)}...</p>
-                                            <div className="gig-footer">
-                                                <span className="gig-budget">${gig.budget}</span>
-                                                <span className="gig-location">{gig.location}</span>
+            {/* --- FIX IS APPLIED HERE --- */}
+            {/* Conditionally render the "Available Gigs" section. Only show if NOT a client. */}
+            {currentUser?.role !== 'Client' && (
+                <section className="section">
+                    <div className="container">
+                        <h2 className="section-title text-center">Available Gigs</h2>
+                        {loading && <p className="text-center">Loading gigs...</p>}
+                        {error && <p className="text-center" style={{color: 'red'}}>{error}</p>}
+                        {!loading && !error && (
+                            <div className="gigs-grid">
+                                {gigs.length > 0 ? (
+                                    gigs.map(gig => (
+                                        <Link to={`/gig/${gig._id}`} key={gig._id} className="gig-card-link" onClick={handleGigClick}>
+                                            <div className="gig-card">
+                                                <h3 className="gig-title">{gig.title}</h3>
+                                                <p className="gig-category">{gig.category}</p>
+                                                <p className="gig-description">{gig.description.substring(0, 100)}...</p>
+                                                <div className="gig-footer">
+                                                    <span className="gig-budget">₹{gig.budget}</span>
+                                                    <span className="gig-location">{gig.location}</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                ))
-                            ) : (
-                                <p className="text-center">No gigs found matching your criteria. Try a different search!</p>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </section>
+                                        </Link>
+                                    ))
+                                ) : (
+                                    <p className="text-center">No gigs found matching your criteria. Try a different search!</p>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </section>
+            )}
 
             {/* How It Works Section */}
             <section className="section">
@@ -149,6 +166,22 @@ const HomePage = () => {
             </section>
         </main>
     );
+};
+
+// --- Replicated styles from FindWorkPage for the message ---
+const messageStyles = {
+    position: 'fixed',
+    top: '90px', 
+    left: '50%',
+    transform: 'translateX(-50%)',
+    background: '#ef4444',
+    color: 'white',
+    padding: '1rem 2rem',
+    borderRadius: '0.5rem',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    zIndex: 1000,
+    fontSize: '1rem',
+    fontWeight: '500',
 };
 
 export default HomePage;

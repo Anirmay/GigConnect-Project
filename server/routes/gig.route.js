@@ -3,8 +3,9 @@ const verifyToken = require('../utils/verifyUser.js');
 const Gig = require('../models/gig.model.js');
 const router = express.Router();
 
+// CREATE A NEW GIG
 router.post('/create', verifyToken, async (req, res) => {
-    if (req.user.role !== 'Client') {
+    if (req.user.role.toLowerCase() !== 'client') {
         return res.status(403).json({ message: "Forbidden: Only clients can post gigs." });
     }
     try {
@@ -16,6 +17,32 @@ router.post('/create', verifyToken, async (req, res) => {
     }
 });
 
+// --- NEW --- UPDATE A GIG
+router.put('/update/:id', verifyToken, async (req, res) => {
+    try {
+        const gig = await Gig.findById(req.params.id);
+        if (!gig) {
+            return res.status(404).json({ message: 'Gig not found.' });
+        }
+        // Check if the user trying to update the gig is the one who created it
+        if (gig.userRef.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'You can only update your own gigs.' });
+        }
+        
+        const updatedGig = await Gig.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true } // {new: true} returns the updated document
+        );
+        
+        res.status(200).json(updatedGig);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error while updating gig.' });
+    }
+});
+
+
+// GET ALL GIGS (with search)
 router.get('/', async (req, res) => {
     try {
         const { searchTerm, category, location } = req.query;
@@ -32,6 +59,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET GIGS FOR CURRENT USER
 router.get('/user/my-gigs', verifyToken, async (req, res) => {
     try {
         const gigs = await Gig.find({ userRef: req.user.id });
@@ -41,6 +69,7 @@ router.get('/user/my-gigs', verifyToken, async (req, res) => {
     }
 });
 
+// DELETE A GIG
 router.delete('/delete/:id', verifyToken, async (req, res) => {
     try {
         const gig = await Gig.findById(req.params.id);
@@ -55,17 +84,18 @@ router.delete('/delete/:id', verifyToken, async (req, res) => {
     }
 });
 
+// GET SINGLE GIG
 router.get('/:id', async (req, res) => {
-    try {
-        const gig = await Gig.findById(req.params.id).populate('userRef', 'username email');
-        if (!gig) {
-            return res.status(404).json({ message: 'Gig not found' });
-        }
-        res.status(200).json(gig);
-    } catch (error) {
-        res.status(500).json({ message: 'Server error while fetching gig.' });
+  try {
+    const gig = await Gig.findById(req.params.id).populate('userRef', 'username email');
+    if (!gig) {
+      return res.status(404).json({ message: 'Gig not found' });
     }
+    res.status(200).json(gig);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error while fetching gig.' });
+  }
 });
 
-module.exports = router;
 
+module.exports = router;

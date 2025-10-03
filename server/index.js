@@ -14,6 +14,8 @@ const profileRoutes = require('./routes/profile.route.js');
 const messageRoutes = require('./routes/message.route.js');
 const userRoutes = require('./routes/user.route.js');
 const reviewRoutes = require('./routes/review.route.js');
+const paymentRoutes = require('./routes/payment.route.js');
+
 
 const app = express();
 const server = http.createServer(app);
@@ -62,6 +64,7 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/review', reviewRoutes);
+app.use('/api/payment', paymentRoutes);
 
 
 const PORT = process.env.PORT || 8000;

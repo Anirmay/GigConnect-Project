@@ -103,3 +103,4 @@ const bottomBarStyles = {
 };
 
 export default Footer;
+

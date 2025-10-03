@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import PaymentButton from "../components/PaymentButton";
+
 
 const GigDetailPage = () => {
     const { id } = useParams();
@@ -17,26 +19,26 @@ const GigDetailPage = () => {
     const [comment, setComment] = useState('');
 
     useEffect(() => {
-        const fetchGigAndReviews = async () => {
-            try {
-                setLoading(true);
-                // Fetch both gig details and reviews at the same time for efficiency
-                const [gigRes, reviewRes] = await Promise.all([
-                    axios.get(`http://localhost:8000/api/gig/${id}`),
-                    axios.get(`http://localhost:8000/api/review/${id}`)
+    const fetchGigAndReviews = async () => {
+        try {
+            setLoading(true);
+            const [gigRes, reviewRes] = await Promise.all([
+                axios.get(`http://localhost:8000/api/gig/${id}`),
+                axios.get(`http://localhost:8000/api/review/${id}`)
                 ]);
-                
-                setGig(gigRes.data);
-                setReviews(reviewRes.data);
-            } catch (err) {
-                setError('Could not fetch data for this gig.');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchGigAndReviews();
-    }, [id]);
+
+            setGig(gigRes.data);
+            setReviews(reviewRes.data);
+        } catch (err) {
+            setError('Could not fetch data for this gig.');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+    fetchGigAndReviews();
+}, [id]);
+
 
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
@@ -49,7 +51,6 @@ const GigDetailPage = () => {
                 { gigId: id, rating, comment }, 
                 { withCredentials: true }
             );
-            // After submitting, fetch reviews again to include the new one with the username
             const reviewRes = await axios.get(`http://localhost:8000/api/review/${id}`);
             setReviews(reviewRes.data);
             setComment('');
@@ -65,32 +66,46 @@ const GigDetailPage = () => {
         }
     };
 
+    const handleEdit = () => {
+        navigate(`/edit-gig/${id}`);
+    };
+
     if (loading) return <p style={{textAlign: 'center', marginTop: '2rem'}}>Loading gig details...</p>;
     if (error) return <p style={{ color: 'red', textAlign: 'center', marginTop: '2rem' }}>{error}</p>;
-    // NEW: Added a check to ensure 'gig' is not null before rendering
     if (!gig) return <p style={{textAlign: 'center', marginTop: '2rem'}}>Gig not found.</p>;
+
+    const isOwnGig = currentUser && gig.userRef && currentUser._id === gig.userRef._id;
 
     return (
         <div style={pageStyles}>
-            {/* Gig Details Section */}
             <div style={cardStyles}>
                 <h1 style={titleStyles}>{gig.title}</h1>
-                {/* NEW: Added a check for userRef before trying to display it */}
                 {gig.userRef && <p style={detailStyles}><strong>Posted by:</strong> {gig.userRef.username}</p>}
                 <p style={detailStyles}><strong>Category:</strong> {gig.category}</p>
                 <p style={detailStyles}><strong>Location:</strong> {gig.location}</p>
-                <p style={detailStyles}><strong>Budget:</strong> ${gig.budget}</p>
+                <p style={detailStyles}><strong>Budget:</strong> ₹{gig.budget}</p>
                 <p style={{marginTop: '1rem'}}>{gig.description}</p>
                 
-                {/* Contact Client button */}
-                {currentUser && gig.userRef && currentUser._id !== gig.userRef._id && (
-                    <button onClick={handleContact} style={{...buttonStyles, marginTop: '1rem'}}>
-                        Contact Client
-                    </button>
+                {/* Buttons for users who are NOT the owner */}
+                {!isOwnGig && (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem', marginTop: '1rem' }}>
+                        <PaymentButton amount={gig.budget} style={actionButtonStyles} />
+                        <button onClick={handleContact} style={actionButtonStyles}>
+                            Contact Client
+                        </button>
+                    </div>
+                )}
+
+                {/* Button for the user who IS the owner */}
+                {isOwnGig && (
+                    <div style={{ marginTop: '1rem' }}>
+                        <button onClick={handleEdit} style={editButtonStyles}>
+                            Edit Gig
+                        </button>
+                    </div>
                 )}
             </div>
 
-            {/* Reviews Section */}
             <div style={cardStyles}>
                 <h2>Reviews</h2>
                 {reviews.length > 0 ? (
@@ -103,7 +118,6 @@ const GigDetailPage = () => {
                 ) : <p>No reviews yet. Be the first to leave a review!</p>}
             </div>
 
-            {/* Add Review Form */}
             {currentUser && (
                 <div style={cardStyles}>
                     <h2>Leave a Review</h2>
@@ -124,7 +138,7 @@ const GigDetailPage = () => {
     );
 };
 
-// --- Styles (no changes needed) ---
+// --- Styles ---
 const pageStyles = { padding: '2rem', background: '#f9fafb', display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' };
 const cardStyles = { background: 'white', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', width: '100%', maxWidth: '800px' };
 const titleStyles = { fontSize: '2rem', fontWeight: 'bold', borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem', marginBottom: '1rem' };
@@ -132,6 +146,22 @@ const detailStyles = { color: '#6b7280', fontSize: '1rem' };
 const reviewStyles = { borderBottom: '1px solid #e5e7eb', paddingBottom: '1rem', marginBottom: '1rem' };
 const inputStyles = { width: '100%', padding: '0.75rem', border: '1px solid #d1d5db', borderRadius: '0.375rem', marginBottom: '1rem' };
 const buttonStyles = { padding: '0.75rem 1.5rem', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '0.375rem', cursor: 'pointer' };
+
+const actionButtonStyles = {
+    ...buttonStyles,
+    width: '200px',
+    height: '45px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+};
+
+// Style for the new "Edit Gig" button
+const editButtonStyles = {
+    ...actionButtonStyles,
+    background: '#10B981', // Green color
+};
+
 
 export default GigDetailPage;
 
