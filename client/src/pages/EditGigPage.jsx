@@ -64,7 +64,7 @@ const EditGigPage = () => {
                         <option value="Video & Animation">Video & Animation</option>
                         <option value="Digital Marketing">Digital Marketing</option>
                     </select>
-                    <input type="number" name="budget" placeholder="Budget (in USD)" value={formData.budget} onChange={handleChange} style={inputStyles} required />
+                    <input type="number" name="budget" placeholder="Budget (in INR)" value={formData.budget} onChange={handleChange} style={inputStyles} required />
                      <input type="text" name="location" placeholder="Location" value={formData.location} onChange={handleChange} style={inputStyles} required />
                     {error && <p style={errorStyles}>{error}</p>}
                     <button type="submit" style={buttonStyles} disabled={loading}>

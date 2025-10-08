@@ -1,344 +1,463 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext.jsx';
-
-// --- ICONS ---
-const SearchIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ height: '1.25rem', width: '1.25rem', color: '#9ca3af' }}
-  >
-    <circle cx="11" cy="11" r="8"></circle>
-    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-  </svg>
-);
-
-const BriefcaseIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ height: '2rem', width: '2rem', color: '#4f46e5' }}
-  >
-    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-  </svg>
-);
-
-const UsersIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ height: '2rem', width: '2rem', color: '#4f46e5' }}
-  >
-    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-    <circle cx="8.5" cy="7" r="4"></circle>
-    <polyline points="17 11 19 13 23 9"></polyline>
-  </svg>
-);
-
-const CreditCardIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={{ height: '2rem', width: '2rem', color: '#4f46e5' }}
-  >
-    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-    <line x1="1" y1="10" x2="23" y2="10"></line>
-  </svg>
-);
+import React, { useContext, useRef } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx";
+import { Briefcase, Users, CreditCard, Mail, Info } from "lucide-react";
+import emailjs from "@emailjs/browser";
 
 const HomePage = () => {
   const { currentUser } = useContext(AuthContext);
-  const popularCategories = [
-    'All',
-    'Web Development',
-    'Graphic Design',
-    'Writing & Translation',
-    'Video & Animation',
-    'Digital Marketing',
-  ];
-  const navigate = useNavigate();
-  const location = useLocation();
+  const form = useRef();
 
-  const [gigs, setGigs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loginMessage, setLoginMessage] = useState('');
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm') || '';
-    setSearchTerm(searchTermFromUrl);
-
-    const fetchGigs = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `http://localhost:8000/api/gig${location.search}`
-        );
-        setGigs(response.data.slice(0, 6));
-        setError(null);
-      } catch (err) {
-        setError('Could not fetch gigs.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchGigs();
-  }, [location.search]);
-
-  const handleSearchSubmit = (e) => {
+  // ===== SEND FEEDBACK VIA EMAILJS =====
+  const sendEmail = (e) => {
     e.preventDefault();
-    const urlParams = new URLSearchParams();
-    urlParams.set('searchTerm', searchTerm);
-    navigate(`/find-work?${urlParams.toString()}`);
-  };
 
-  const handleCategoryClick = (category) => {
-    const urlParams = new URLSearchParams();
-    if (category !== 'All') {
-      urlParams.set('category', category);
-    }
-    navigate(`/find-work?${urlParams.toString()}`);
-  };
-
-  const handleGigClick = (e) => {
-    if (!currentUser) {
-      e.preventDefault();
-      setLoginMessage('You must be logged in to view gig details.');
-      setTimeout(() => {
-        setLoginMessage('');
-      }, 3000);
-    }
+    emailjs
+      .sendForm(
+        "service_uq0k9fi",
+        "template_u20y7tx",
+        form.current,
+        "8zulPVQMoLdxpecti"
+      )
+      .then(
+        () => {
+          alert("✅ Feedback sent successfully!");
+          form.current.reset();
+        },
+        (error) => {
+          console.error("Error:", error);
+          alert("❌ Failed to send feedback. Try again!");
+        }
+      );
   };
 
   return (
-    <main className="main-container">
-      {loginMessage && (
-        <div style={{ ...messageStyles, top: '90px' }}>{loginMessage}</div>
-      )}
+    <main className="bg-gradient-to-b from-white to-indigo-50 min-h-screen">
+      <style>{`
+        /* HERO */
+        .hero {
+          text-align: center;
+          padding: 6rem 1rem 4rem;
+          background: linear-gradient(180deg, #ffffff, #eef2ff);
+        }
+        .hero h1 {
+          font-size: 3rem;
+          font-weight: 700;
+          color: #111827;
+          margin-bottom: 1rem;
+        }
+        .highlight { color: #4f46e5; }
+        .hero p {
+          font-size: 1.125rem;
+          color: #4b5563;
+          max-width: 650px;
+          margin: 0 auto 2rem;
+        }
+        .cta-buttons {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+        .cta-btn {
+          background: #4f46e5;
+          color: white;
+          border: none;
+          padding: 0.9rem 2rem;
+          border-radius: 0.5rem;
+          font-size: 1rem;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          text-decoration: none;
+        }
+        .cta-btn:hover {
+          background: #4338ca;
+          transform: translateY(-3px);
+          box-shadow: 0 6px 12px rgba(79,70,229,0.2);
+        }
+        .secondary-btn {
+          background: transparent;
+          color: #4f46e5;
+          border: 2px solid #4f46e5;
+        }
+        .secondary-btn:hover { background: #eef2ff; }
 
-       {/* --- NEW SECTION: Client / Freelancer Greeting --- */}
-{currentUser?.role === 'Client' && (
-  <section className="section">
-    <div className="container text-center">
-      <div className="greeting-box">
-        <h1 className="section-title greeting-title">
-          <span className="hi-text">Hi</span>{' '}
-          <span className="role-text">Client</span>
-        </h1>
-        <p className="section-subtitle greeting-subtitle">
-          Welcome back! 🎉 You can post jobs and connect with talented freelancers today. 
-          Whether you need a quick project or a long-term partnership, GigConnect helps 
-          you find the right professional for your needs. Take advantage of our secure 
-          platform and hire with confidence.
-        </p>
-      </div>
-    </div>
-  </section>
-)}
+        /* GENERAL SECTIONS */
+        section {
+          padding: 4rem 1rem;
+        }
+        .section-title {
+          text-align: center;
+          font-size: 2rem;
+          font-weight: 700;
+          color: #111827;
+          margin-bottom: 1rem;
+        }
+        .section-subtitle {
+          text-align: center;
+          color: #6b7280;
+          margin-bottom: 3rem;
+        }
 
-{currentUser?.role === 'Freelancer' && (
-  <section className="section">
-    <div className="container text-center">
-      <div className="greeting-box">
-        <h1 className="section-title greeting-title">
-          <span className="hi-text">Hi</span>{' '}
-          <span className="role-text">Freelancer</span>
-        </h1>
-        <p className="section-subtitle greeting-subtitle">
-          Welcome back! 🚀 Browse new gigs and start working with amazing clients. 
-          Build your portfolio, earn money, and grow your professional reputation. 
-          With GigConnect, you can showcase your skills, apply to projects that match 
-          your expertise, and get paid securely on time.
-        </p>
-      </div>
-    </div>
-  </section>
-)}
+        /* HOW IT WORKS */
+        .steps-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 2rem;
+          max-width: 1000px;
+          margin: 0 auto;
+        }
+        .step-card {
+          background: #f9fafb;
+          border-radius: 1rem;
+          padding: 2rem;
+          text-align: center;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .step-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 15px rgba(0,0,0,0.08);
+        }
+        .step-icon {
+          background: #eef2ff;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 1rem;
+          color: #4f46e5;
+        }
 
+        /* ABOUT US */
+        .about {
+          background: linear-gradient(to bottom right, #ffffff, #eef2ff);
+          padding: 5rem 1rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .about-content {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 3rem;
+          max-width: 1100px;
+          align-items: center;
+        }
+        .about-text h2 {
+          font-size: 2.5rem;
+          font-weight: 800;
+          color: #111827;
+          margin-bottom: 1rem;
+          text-align: left;
+        }
+        .about-text h2 span {
+          background: linear-gradient(90deg, #4f46e5, #6366f1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        .about-text p {
+          color: #4b5563;
+          font-size: 1.1rem;
+          line-height: 1.8;
+          margin-bottom: 2rem;
+        }
+        .about-img {
+          text-align: center;
+        }
+        .about-img img {
+          width: 100%;
+          max-width: 450px;
+          border-radius: 1rem;
+          box-shadow: 0 10px 20px rgba(79,70,229,0.15);
+          transition: transform 0.4s ease;
+        }
+        .about-img img:hover {
+          transform: scale(1.05);
+        }
+        .values-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 1.5rem;
+          margin-top: 3rem;
+          max-width: 900px;
+        }
+        .value-card {
+          background: white;
+          border-radius: 1rem;
+          padding: 1.8rem;
+          text-align: center;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+          transition: all 0.3s ease;
+        }
+        .value-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+        }
+        .value-icon {
+          background: #eef2ff;
+          color: #4f46e5;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 1rem;
+        }
+        .value-card h4 {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: #111827;
+          margin-bottom: 0.5rem;
+        }
+        .value-card p {
+          font-size: 0.95rem;
+          color: #6b7280;
+        }
 
+        /* CONTACT */
+        .contact {
+          background: #f9fafb;
+        }
+        form {
+          max-width: 600px;
+          margin: 0 auto;
+          background: white;
+          padding: 2rem;
+          border-radius: 1rem;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        input, textarea {
+          width: 100%;
+          padding: 0.9rem;
+          margin-bottom: 1rem;
+          border: 1px solid #d1d5db;
+          border-radius: 0.5rem;
+          font-size: 1rem;
+        }
+        button[type="submit"] {
+          background: #4f46e5;
+          color: white;
+          padding: 0.8rem 2rem;
+          border: none;
+          border-radius: 0.5rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+        button[type="submit"]:hover {
+          background: #4338ca;
+          transform: translateY(-2px);
+        }
 
+        /* FOOTER */
+        footer {
+          background: #111827;
+          color: white;
+          padding: 3rem 1rem;
+          text-align: center;
+        }
+        footer p {
+          color: #9ca3af;
+          font-size: 0.9rem;
+        }
+      `}</style>
 
-
-
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container text-center">
-          <h1 className="hero-title">
-            Find Local Talent, <span className="highlight">On-Demand.</span>
-          </h1>
-          <p className="hero-subtitle">
-            Connect with skilled freelancers in your city. From web design to dog
-            walking, GigConnect is your hyperlocal marketplace for professional
-            services.
-          </p>
-          <form onSubmit={handleSearchSubmit} className="search-container">
-            <div className="search-input-wrapper">
-              <div className="search-icon">
-                <SearchIcon />
-              </div>
-              <input
-                type="search"
-                placeholder="e.g., 'Graphic Designer in New York'"
-                className="search-input"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      {/* === HERO SECTION === */}
+      <section className="hero">
+        {!currentUser && (
+          <>
+            <h1>
+              Find Work or Hire <span className="highlight">Local Talent</span>
+            </h1>
+            <p>
+              Join GigConnect — where freelancers meet clients for real, local,
+              and remote opportunities. Whether you want to showcase skills or
+              hire trusted professionals, it starts here.
+            </p>
+            <div className="cta-buttons">
+              <Link to="/auth" className="cta-btn">
+                Get Started
+              </Link>
             </div>
-            <button type="submit" className="search-button">
-              Search
-            </button>
-          </form>
-          <div className="popular-categories">
-            <span>Popular:</span>
-            {popularCategories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleCategoryClick(cat)}
-                className="category-tag"
-              >
-                {cat}
-              </button>
-            ))}
+          </>
+        )}
+
+        {currentUser?.role === "Client" && (
+          <>
+            <h1>
+              Welcome Back, <span className="highlight">Client</span> 👋
+            </h1>
+            <p>
+              Post jobs, chat with top freelancers, and bring your next project
+              to life — all on GigConnect.
+            </p>
+            <div className="cta-buttons">
+              <Link to="/find-talent" className="cta-btn">
+                Find Talent
+              </Link>
+              <Link to="/post-gig" className="cta-btn secondary-btn">
+                Post a Job
+              </Link>
+            </div>
+          </>
+        )}
+
+        {currentUser?.role === "Freelancer" && (
+          <>
+            <h1>
+              Welcome Back, <span className="highlight">Freelancer</span> 🚀
+            </h1>
+            <p>
+              Discover new gigs, grow your career, and build your reputation
+              with every successful project.
+            </p>
+            <div className="cta-buttons">
+              <Link to="/find-work" className="cta-btn">
+                Find Work
+              </Link>
+              <Link to="/profile" className="cta-btn secondary-btn">
+                View Profile
+              </Link>
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* === HOW IT WORKS === */}
+      <section>
+        <h2 className="section-title">How It Works</h2>
+        <p className="section-subtitle">
+          Get your project done or land your next gig in just three steps.
+        </p>
+
+        <div className="steps-grid">
+          <div className="step-card">
+            <div className="step-icon">
+              <Briefcase size={28} />
+            </div>
+            <h3>1. Create an Account</h3>
+            <p>Sign up as a client or freelancer and start in seconds.</p>
+          </div>
+          <div className="step-card">
+            <div className="step-icon">
+              <Users size={28} />
+            </div>
+            <h3>2. Connect & Collaborate</h3>
+            <p>Browse, chat, and collaborate securely in real time.</p>
+          </div>
+          <div className="step-card">
+            <div className="step-icon">
+              <CreditCard size={28} />
+            </div>
+            <h3>3. Get Paid Safely</h3>
+            <p>Secure payments only after approved, completed work.</p>
           </div>
         </div>
       </section>
 
-      {/* Available Gigs (unchanged) */}
-      {currentUser?.role !== 'Client' && (
-        <section className="section">
-          <div className="container">
-            <h2 className="section-title text-center">Available Gigs</h2>
-            {loading && <p className="text-center">Loading gigs...</p>}
-            {error && <p className="text-center" style={{ color: 'red' }}>{error}</p>}
-            {!loading && !error && (
-              <div className="gigs-grid">
-                {gigs.length > 0 ? (
-                  gigs.map((gig) => (
-                    <Link
-                      to={`/gig/${gig._id}`}
-                      key={gig._id}
-                      className="gig-card-link"
-                      onClick={handleGigClick}
-                    >
-                      <div className="gig-card">
-                        <h3 className="gig-title">{gig.title}</h3>
-                        <p className="gig-category">{gig.category}</p>
-                        <p className="gig-description">
-                          {gig.description.substring(0, 100)}...
-                        </p>
-                        <div className="gig-footer">
-                          <span className="gig-budget">₹{gig.budget}</span>
-                          <span className="gig-location">{gig.location}</span>
-                        </div>
-                      </div>
-                    </Link>
-                  ))
-                ) : (
-                  <p className="text-center">
-                    No gigs found matching your criteria. Try a different search!
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* How It Works Section */}
-      <section className="section">
-        <div className="container">
-          <div className="text-center">
-            <h2 className="section-title">How It Works</h2>
-            <p className="section-subtitle">
-              Get your project done in just a few simple steps.
+      {/* === ABOUT US === */}
+      <section className="about">
+        <div className="about-content">
+          <div className="about-text">
+            <h2>
+              About <span>GigConnect</span>
+            </h2>
+            <p>
+              GigConnect is built with one mission — to bridge the gap between 
+              passionate freelancers and visionary clients. Our platform makes it 
+              easy to collaborate, communicate, and create together with trust and transparency.
+            </p>
+            <p>
+              Whether you’re launching a business, managing a project, or starting 
+              your freelance journey, GigConnect gives you the tools to grow your 
+              brand and connect with people who share your goals.
             </p>
           </div>
-          <div className="how-it-works-grid">
-            <div className="how-it-works-card">
-              <div className="icon-wrapper">
-                <BriefcaseIcon />
-              </div>
-              <h3 className="card-title">1. Post a Job</h3>
-              <p className="card-description">
-                Tell us about your project. Our platform will connect you with
-                the right freelancers for the job.
-              </p>
+          <div className="about-img">
+            <img
+              src="https://img.freepik.com/free-vector/creative-team-concept-illustration_114360-1152.jpg"
+              alt="Teamwork illustration"
+            />
+          </div>
+        </div>
+
+        <div className="values-grid">
+          <div className="value-card">
+            <div className="value-icon">
+              <Users size={26} />
             </div>
-            <div className="how-it-works-card">
-              <div className="icon-wrapper">
-                <UsersIcon />
-              </div>
-              <h3 className="card-title">2. Hire Talent</h3>
-              <p className="card-description">
-                Browse profiles, read reviews, and hire the best fit. Chat and
-                collaborate directly.
-              </p>
+            <h4>Community</h4>
+            <p>
+              We believe in empowering people through connection, collaboration, 
+              and shared success.
+            </p>
+          </div>
+          <div className="value-card">
+            <div className="value-icon">
+              <Briefcase size={26} />
             </div>
-            <div className="how-it-works-card">
-              <div className="icon-wrapper">
-                <CreditCardIcon />
-              </div>
-              <h3 className="card-title">3. Pay Securely</h3>
-              <p className="card-description">
-                Pay through our secure platform only when the work is approved.
-                It's simple and safe.
-              </p>
+            <h4>Trust</h4>
+            <p>
+              Our secure platform ensures transparent communication and safe payments 
+              every time.
+            </p>
+          </div>
+          <div className="value-card">
+            <div className="value-icon">
+              <CreditCard size={26} />
             </div>
+            <h4>Growth</h4>
+            <p>
+              We help freelancers and clients scale their careers and projects 
+              with confidence.
+            </p>
           </div>
         </div>
       </section>
+
+      {/* === CONTACT / FEEDBACK === */}
+      <section className="contact">
+        <h2 className="section-title">
+          <Mail size={24} style={{ display: "inline", marginRight: "8px" }} />
+          Contact Us
+        </h2>
+        <p className="section-subtitle">
+          Have questions or feedback? We'd love to hear from you.
+        </p>
+
+        <form ref={form} onSubmit={sendEmail}>
+          <input
+            type="text"
+            name="user_name"
+            placeholder="Your Name"
+            required
+          />
+          <input
+            type="email"
+            name="user_email"
+            placeholder="Your Email"
+            required
+          />
+          <textarea
+            name="message"
+            rows="5"
+            placeholder="Your Message"
+            required
+          ></textarea>
+          <button type="submit">Send Feedback</button>
+        </form>
+      </section>
+
+      {/* === FOOTER === */}
+      <footer>
+        <p>© {new Date().getFullYear()} GigConnect. All rights reserved.</p>
+      </footer>
     </main>
   );
-};
-
-// --- Replicated styles from FindWorkPage for the message ---
-const messageStyles = {
-  position: 'fixed',
-  top: '90px',
-  left: '50%',
-  transform: 'translateX(-50%)',
-  background: '#ef4444',
-  color: 'white',
-  padding: '1rem 2rem',
-  borderRadius: '0.5rem',
-  boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-  zIndex: 1000,
-  fontSize: '1rem',
-  fontWeight: '500',
 };
 
 export default HomePage;

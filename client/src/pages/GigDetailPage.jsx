@@ -4,7 +4,6 @@ import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import PaymentButton from "../components/PaymentButton";
 
-
 const GigDetailPage = () => {
     const { id } = useParams();
     const { currentUser } = useContext(AuthContext);
@@ -14,31 +13,28 @@ const GigDetailPage = () => {
     const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
 
     useEffect(() => {
-    const fetchGigAndReviews = async () => {
-        try {
-            setLoading(true);
-            const [gigRes, reviewRes] = await Promise.all([
-                axios.get(`http://localhost:8000/api/gig/${id}`),
-                axios.get(`http://localhost:8000/api/review/${id}`)
+        const fetchGigAndReviews = async () => {
+            try {
+                setLoading(true);
+                const [gigRes, reviewRes] = await Promise.all([
+                    axios.get(`http://localhost:8000/api/gig/${id}`),
+                    axios.get(`http://localhost:8000/api/review/${id}`)
                 ]);
-
-            setGig(gigRes.data);
-            setReviews(reviewRes.data);
-        } catch (err) {
-            setError('Could not fetch data for this gig.');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-    fetchGigAndReviews();
-}, [id]);
-
+                setGig(gigRes.data);
+                setReviews(reviewRes.data);
+            } catch (err) {
+                setError('Could not fetch data for this gig.');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchGigAndReviews();
+    }, [id]);
 
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
@@ -47,8 +43,9 @@ const GigDetailPage = () => {
             return;
         }
         try {
-            await axios.post('http://localhost:8000/api/review/create', 
-                { gigId: id, rating, comment }, 
+            await axios.post(
+                'http://localhost:8000/api/review/create',
+                { gigId: id, rating, comment },
                 { withCredentials: true }
             );
             const reviewRes = await axios.get(`http://localhost:8000/api/review/${id}`);
@@ -59,7 +56,7 @@ const GigDetailPage = () => {
             setError('Failed to submit review.');
         }
     };
-    
+
     const handleContact = () => {
         if (gig && gig.userRef) {
             navigate('/messages', { state: { userToChat: gig.userRef } });
@@ -70,9 +67,9 @@ const GigDetailPage = () => {
         navigate(`/edit-gig/${id}`);
     };
 
-    if (loading) return <p style={{textAlign: 'center', marginTop: '2rem'}}>Loading gig details...</p>;
+    if (loading) return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Loading gig details...</p>;
     if (error) return <p style={{ color: 'red', textAlign: 'center', marginTop: '2rem' }}>{error}</p>;
-    if (!gig) return <p style={{textAlign: 'center', marginTop: '2rem'}}>Gig not found.</p>;
+    if (!gig) return <p style={{ textAlign: 'center', marginTop: '2rem' }}>Gig not found.</p>;
 
     const isOwnGig = currentUser && gig.userRef && currentUser._id === gig.userRef._id;
 
@@ -84,12 +81,15 @@ const GigDetailPage = () => {
                 <p style={detailStyles}><strong>Category:</strong> {gig.category}</p>
                 <p style={detailStyles}><strong>Location:</strong> {gig.location}</p>
                 <p style={detailStyles}><strong>Budget:</strong> ₹{gig.budget}</p>
-                <p style={{marginTop: '1rem'}}>{gig.description}</p>
-                
+                <p style={{ marginTop: '1rem' }}>{gig.description}</p>
+
                 {/* Buttons for users who are NOT the owner */}
                 {!isOwnGig && (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem', marginTop: '1rem' }}>
-                        <PaymentButton amount={gig.budget} style={actionButtonStyles} />
+                        {/* Show Pay button only if user is a client */}
+                        {currentUser?.role === "client" && (
+                            <PaymentButton amount={gig.budget} style={actionButtonStyles} />
+                        )}
                         <button onClick={handleContact} style={actionButtonStyles}>
                             Contact Client
                         </button>
@@ -129,7 +129,13 @@ const GigDetailPage = () => {
                             <option value="2">2 Stars</option>
                             <option value="1">1 Star</option>
                         </select>
-                        <textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Write your comment..." style={{...inputStyles, height: '100px'}} required />
+                        <textarea
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            placeholder="Write your comment..."
+                            style={{ ...inputStyles, height: '100px' }}
+                            required
+                        />
                         <button type="submit" style={buttonStyles}>Submit Review</button>
                     </form>
                 </div>
@@ -156,12 +162,9 @@ const actionButtonStyles = {
     justifyContent: 'center',
 };
 
-// Style for the new "Edit Gig" button
 const editButtonStyles = {
     ...actionButtonStyles,
-    background: '#10B981', // Green color
+    background: '#10B981', // Green
 };
 
-
 export default GigDetailPage;
-

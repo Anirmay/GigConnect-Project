@@ -104,4 +104,3 @@ const buttonStyles = { padding: '0.75rem', background: '#4f46e5', color: 'white'
 const errorStyles = { color: '#ef4444', textAlign: 'center', fontSize: '0.875rem' };
 
 export default ProfilePage;
-

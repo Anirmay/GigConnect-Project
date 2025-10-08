@@ -17,15 +17,18 @@ const userRoutes = require('./routes/user.route.js');
 const reviewRoutes = require('./routes/review.route.js');
 const paymentRoutes = require('./routes/payment.route.js');
 
+// ✅ Added freelancer review route
+// const freelancerReviewRoutes = require('./routes/freelancerReview.route.js');
+
 const app = express();
 const server = http.createServer(app);
 
-// ✅ IMPORTANT: use your deployed frontend URL here, not localhost
+// ✅ Socket.io setup
 const io = new Server(server, {
   cors: {
     origin: [
-      "http://localhost:5173", // for local dev
-      "https://gigconnect-anirmay.vercel.app", // example frontend URL if deployed
+      "http://localhost:5173", // Local dev
+      "https://gigconnect-anirmay.vercel.app", // Production frontend URL
     ],
     methods: ["GET", "POST"],
     credentials: true,
@@ -51,7 +54,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://gigconnect-anirmay.vercel.app", // update with your actual frontend domain
+      "https://gigconnect-anirmay.vercel.app", // your frontend domain
     ],
     credentials: true,
   })
@@ -59,7 +62,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-// Middleware to attach socket info
+// ✅ Middleware to attach socket info
 app.use((req, res, next) => {
   req.io = io;
   req.getReceiverSocketId = getReceiverSocketId;
@@ -83,6 +86,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/payment", paymentRoutes);
+
+// ✅ Freelancer Review route added here
+// app.use("/api/freelancer-review", freelancerReviewRoutes);
 
 // ✅ Serve frontend from 'dist' (must exist inside your backend folder)
 app.use(express.static(path.join(__dirname, "dist")));

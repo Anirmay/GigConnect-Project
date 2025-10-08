@@ -29,4 +29,3 @@ const pageStyles = {
 };
 
 export default ChatPage;
-

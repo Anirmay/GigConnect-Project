@@ -98,4 +98,3 @@ const myMessageStyles = { ...messageBaseStyles, background: '#4f46e5', color: 'w
 const theirMessageStyles = { ...messageBaseStyles, background: '#e5e7eb', color: '#333', alignSelf: 'flex-start' };
 
 export default MessageContainer;
-
