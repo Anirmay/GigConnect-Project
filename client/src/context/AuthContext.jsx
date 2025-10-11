@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
         const verifyUser = async () => {
             try {
                 // This call checks with the backend if the user is still logged in
-                const res = await axios.get('http://localhost:8000/api/auth/verify', { withCredentials: true });
+                const res = await axios.get('/api/auth/verify', { withCredentials: true });
                  console.log("User data from backend:", res.data);
                 setCurrentUser(res.data);
             } catch (error) {

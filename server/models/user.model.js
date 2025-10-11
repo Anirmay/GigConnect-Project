@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['Client', 'Freelancer'],
+        enum: ['Client', 'freelancer'],
         required: true
     },
     // Fields for the password reset functionality

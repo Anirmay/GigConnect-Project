@@ -75,7 +75,7 @@ const ProfilePage = () => {
                 <p style={subtitleStyles}>This information will be visible to potential clients.</p>
                 
                 {/* Only show the form to users with the 'Freelancer' role */}
-                {currentUser.role === 'Freelancer' ? (
+                {currentUser.role === 'freelancer' ? (
                     <form onSubmit={handleSubmit} style={formStyles}>
                         <input type="text" name="headline" placeholder="Your Professional Headline (e.g., 'Senior React Developer')" value={profileData.headline || ''} onChange={handleChange} style={inputStyles} />
                         <textarea name="bio" placeholder="Write a short bio about your skills and experience..." value={profileData.bio || ''} onChange={handleChange} style={{...inputStyles, height: '120px'}} />

@@ -165,7 +165,7 @@ const AuthPage = () => {
                             <input type="password" placeholder="Password" name="password" value={signUpData.password} onChange={handleSignUpChange} required />
                             <select name="role" value={signUpData.role} onChange={handleSignUpChange} required>
                                 <option value="Client">I am a Client</option>
-                                <option value="Freelancer">I am a Freelancer</option>
+                                <option value="freelancer">I am a Freelancer</option>
                             </select>
                             {/* NEW: Display error messages */}
                             <div className="error-message">{isSignUp ? error : ''}</div>

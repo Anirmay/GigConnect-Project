@@ -306,7 +306,7 @@ const HomePage = () => {
           </>
         )}
 
-        {currentUser?.role === "Freelancer" && (
+        {currentUser?.role === "freelancer" && (
           <>
             <h1>
               Welcome Back, <span className="highlight">Freelancer</span> 🚀

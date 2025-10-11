@@ -122,7 +122,7 @@ const Header = () => {
               Find Talent
             </NavLink>
           )}
-          {currentUser?.role === "Freelancer" && (
+          {currentUser?.role === "freelancer" && (
             <NavLink to="/find-work" className={navClass}>
               Find Work
             </NavLink>
@@ -198,7 +198,7 @@ const Header = () => {
                 Find Talent
               </Link>
             )}
-            {currentUser?.role === "Freelancer" && (
+            {currentUser?.role === "freelancer" && (
               <Link to="/find-work" onClick={() => setMobileOpen(false)} style={{ display: "block", padding: "8px 0" }}>
                 Find Work
               </Link>
