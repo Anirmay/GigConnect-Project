@@ -7,7 +7,7 @@ const Layout = () => {
     <>
       <Header />
       <main>
-        {/* The Outlet component renders the current page (e.g., HomePage) */}
+
         <Outlet />
       </main>
     </>

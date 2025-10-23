@@ -1,9 +1,9 @@
-// src/components/Header.jsx
+
 import React, { useContext, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // adjust if your path is different
+import { AuthContext } from "../context/AuthContext";
 
-// logo svg
+
 const LogoIcon = () => (
   <svg width="34" height="34" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
     <rect width="32" height="32" rx="8" fill="#4f46e5" />
@@ -20,7 +20,7 @@ const Header = () => {
     try {
       await logout();
     } catch (e) {
-      // ignore - keep UX smooth
+
       console.error(e);
     }
     navigate("/");
@@ -28,7 +28,6 @@ const Header = () => {
 
   const toggleMobile = () => setMobileOpen((s) => !s);
 
-  // className generator for NavLink active style
   const navClass = ({ isActive }) => (isActive ? "gc-nav-link active" : "gc-nav-link");
 
   return (
@@ -105,7 +104,6 @@ const Header = () => {
             Home
           </NavLink>
 
-          {/* role-based nav links */}
           {!currentUser && (
             <>
               <NavLink to="/find-talent" className={navClass}>

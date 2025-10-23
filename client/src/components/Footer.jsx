@@ -38,7 +38,6 @@ const Footer = () => {
                     {/* Social Media Section */}
                     <div>
                         <h3 style={titleStyles}>Follow Us</h3>
-                        {/* In a real app, these would be links to your social media pages */}
                         <div style={{ display: 'flex', gap: '1rem' }}>
                            <p style={linkStyles}>Facebook</p>
                            <p style={linkStyles}>Twitter</p>
@@ -57,7 +56,7 @@ const Footer = () => {
 
 // --- Styles ---
 const footerStyles = {
-    backgroundColor: '#111827', // Dark background
+    backgroundColor: '#111827',
     color: '#9ca3af',
     padding: '4rem 2rem 0',
 };

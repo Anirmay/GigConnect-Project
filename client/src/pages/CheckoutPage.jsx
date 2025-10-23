@@ -6,7 +6,6 @@ const CheckoutPage = () => {
     const [gig, setGig] = useState(null);
 
     useEffect(() => {
-        // Get the gig details passed from the previous page
         if (location.state && location.state.gig) {
             setGig(location.state.gig);
         }
@@ -40,7 +39,6 @@ const CheckoutPage = () => {
                 </div>
                 
                 <div style={{textAlign: 'center', marginTop: '2rem'}}>
-                    {/* In the future, a Stripe or Razorpay payment form would go here */}
                     <button style={buttonStyles}>Proceed to Payment (Placeholder)</button>
                 </div>
             </div>

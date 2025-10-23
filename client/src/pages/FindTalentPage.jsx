@@ -93,9 +93,9 @@ const FindTalentPage = () => {
     <main
       className="main-container"
       style={{
-        backgroundColor: '#f8faff', // ✅ Light blue background
+        backgroundColor: '#f8faff',
         minHeight: '100vh',
-        paddingTop: '40px', // ✅ Reduced space under navbar (was larger before)
+        paddingTop: '40px', // Reduced space under navbar (was larger before)
         paddingBottom: '50px',
       }}
     >

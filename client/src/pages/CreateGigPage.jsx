@@ -9,14 +9,14 @@ const CreateGigPage = () => {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        category: 'Web Development', // Default category
+        category: 'Web Development',
         budget: '',
         location: ''
     });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Redirect if user is not logged in or is not a Client
+
     if (!currentUser || currentUser.role !== 'Client') {
         // You can also show a "Not Authorized" message
         navigate('/');
@@ -34,7 +34,7 @@ const CreateGigPage = () => {
         try {
             const response = await axios.post('http://localhost:8000/api/gig/create', formData, { withCredentials: true });
             console.log('Gig created successfully:', response.data);
-            navigate('/'); // Redirect to home page after successful creation
+            navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create gig.');
             console.error(err);
@@ -74,7 +74,7 @@ const CreateGigPage = () => {
                     <input
                         type="number"
                         name="budget"
-                        placeholder="Budget (in USD)"
+                        placeholder="Budget (in INR)"
                         onChange={handleChange}
                         style={inputStyles}
                         required
@@ -82,7 +82,7 @@ const CreateGigPage = () => {
                      <input
                         type="text"
                         name="location"
-                        placeholder="Location (e.g., 'New York, NY')"
+                        placeholder="Location (e.g., 'KOLKATA, KL')"
                         onChange={handleChange}
                         style={inputStyles}
                         required

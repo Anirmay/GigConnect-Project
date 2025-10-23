@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 const EditGigPage = () => {
     const { currentUser } = useContext(AuthContext);
     const navigate = useNavigate();
-    const { id } = useParams(); // Get the gig ID from the URL
+    const { id } = useParams();
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -41,7 +41,7 @@ const EditGigPage = () => {
         setError(null);
         try {
             await axios.put(`http://localhost:8000/api/gig/update/${id}`, formData, { withCredentials: true });
-            navigate('/dashboard'); // Redirect to dashboard after successful update
+            navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update gig.');
             console.error(err);

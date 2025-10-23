@@ -11,7 +11,7 @@ const razorpay = new Razorpay({
 router.post("/order", async (req, res) => {
   try {
     const options = {
-      amount: req.body.amount * 100, // convert to paise
+      amount: req.body.amount * 100,
       currency: "INR",
       receipt: "receipt_order_" + Date.now(),
     };
@@ -26,7 +26,6 @@ router.post("/order", async (req, res) => {
 // Verify Payment
 router.post("/verify", async (req, res) => {
   try {
-    // Later we add signature verification here
     res.json({ status: "Payment verified" });
   } catch (err) {
     console.error("❌ Payment verification failed:", err);

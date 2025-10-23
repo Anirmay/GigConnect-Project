@@ -17,7 +17,6 @@ const ProfilePage = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // If no user is logged in, redirect them to the auth page
         if (!currentUser) {
             navigate('/auth');
             return;
@@ -26,7 +25,6 @@ const ProfilePage = () => {
         const fetchProfile = async () => {
             try {
                 const res = await axios.get('http://localhost:8000/api/profile/me', { withCredentials: true });
-                // The API sends back arrays, but we want comma-separated strings for the input fields
                 setProfileData({
                     ...res.data,
                     skills: res.data.skills.join(', '),
@@ -81,7 +79,7 @@ const ProfilePage = () => {
                         <textarea name="bio" placeholder="Write a short bio about your skills and experience..." value={profileData.bio || ''} onChange={handleChange} style={{...inputStyles, height: '120px'}} />
                         <input type="text" name="skills" placeholder="Your Skills (comma separated, e.g., 'React, Node.js, CSS')" value={profileData.skills || ''} onChange={handleChange} style={inputStyles} />
                         <input type="text" name="portfolioLinks" placeholder="Links to your portfolio (comma separated)" value={profileData.portfolioLinks || ''} onChange={handleChange} style={inputStyles} />
-                        <input type="number" name="hourlyRate" placeholder="Your Desired Hourly Rate (in USD)" value={profileData.hourlyRate || ''} onChange={handleChange} style={inputStyles} />
+                        <input type="number" name="hourlyRate" placeholder="Your Desired Hourly Rate (in INR)" value={profileData.hourlyRate || ''} onChange={handleChange} style={inputStyles} />
                         {error && <p style={errorStyles}>{error}</p>}
                         <button type="submit" style={buttonStyles} disabled={loading}>{loading ? 'Saving...' : 'Save Profile'}</button>
                     </form>

@@ -14,8 +14,8 @@ import DashboardPage from './pages/DashboardPage';
 import FindTalentPage from './pages/FindTalentPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import CheckoutPage from './pages/CheckoutPage';
-import FindWorkPage from './pages/FindWorkPage'; // Import the new page
-import WhyGigConnectPage from './pages/WhyGigConnectPage'; // Import the new page
+import FindWorkPage from './pages/FindWorkPage'; 
+import WhyGigConnectPage from './pages/WhyGigConnectPage'; 
 import EditGigPage from "./pages/EditGigPage";
 import './App.css';
 
@@ -44,7 +44,6 @@ export default function App() {
           <Route path="messages" element={<ChatPage />} />
           <Route path="gig/:id" element={<GigDetailPage />} />
           <Route path="dashboard" element={<DashboardPage />} />
-          {/* --- THIS IS THE NEW ROUTE --- */}
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="find-work" element={<FindWorkPage />} />
           <Route path="why-gigconnect" element={<WhyGigConnectPage />} />

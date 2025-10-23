@@ -12,7 +12,7 @@ export default function PaymentButton({ amount }) {
 
       // 2. Open Razorpay checkout
       const options = {
-        key: "rzp_test_ROsUbrSSTao9AG", // use your test Key ID
+        key: "rzp_test_ROsUbrSSTao9AG",
         amount: order.amount,
         currency: order.currency,
         name: "GigConnect",

@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { Search } from 'lucide-react'; // 🔹 Make sure you installed: npm install lucide-react
+import { Search } from 'lucide-react';
 
-// --- Hover styles for gig cards and category buttons ---
+
 const PageStyles = () => (
   <style>{`
       .gig-card-hover {
@@ -73,7 +73,7 @@ const FindWorkPage = () => {
     fetchGigs();
   }, []);
 
-  // --- Filter gigs when search term or category changes ---
+
   useEffect(() => {
     let updated = gigs;
 

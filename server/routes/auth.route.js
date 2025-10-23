@@ -50,8 +50,7 @@ router.post('/login', async (req, res) => {
 
         const token = jwt.sign({ id: validUser._id, role: validUser.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
         
-        // ** THE FIX IS HERE: **
-        // We separate the password from the rest of the user data to send back
+
         const { password: hashedPassword, ...userData } = validUser._doc;
 
         res

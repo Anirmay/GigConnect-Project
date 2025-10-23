@@ -24,17 +24,15 @@ const MessageContainer = ({ selectedUser }) => {
         fetchMessages();
     }, [selectedUser]);
 
-    // --- NEW: useEffect to listen for incoming messages ---
+
     useEffect(() => {
         if (socket) {
             socket.on("newMessage", (newMessage) => {
-                // Only add the message if it belongs to the current conversation
                 if (selectedUser && (newMessage.senderId === selectedUser._id || newMessage.receiverId === selectedUser._id)) {
                     setMessages((prevMessages) => [...prevMessages, newMessage]);
                 }
             });
 
-            // Cleanup function to remove the listener
             return () => socket.off("newMessage");
         }
     }, [socket, selectedUser]);
@@ -85,7 +83,7 @@ const MessageContainer = ({ selectedUser }) => {
     );
 };
 
-// --- Styles (no changes) ---
+
 const containerStyles = { flex: 1, display: 'flex', flexDirection: 'column' };
 const headerStyles = { padding: '1rem', borderBottom: '1px solid #e5e7eb', fontWeight: 'bold' };
 const messagesAreaStyles = { flex: 1, padding: '1rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem' };

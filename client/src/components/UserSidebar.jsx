@@ -109,7 +109,7 @@ const UserSidebar = ({ onSelectUser }) => {
   );
 };
 
-// 🎨 Styles
+//  Styles
 const styles = {
   sidebar: {
     width: '320px',
@@ -117,9 +117,9 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#f9fafb',
-    height: 'calc(100vh - 64px)', // 🟢 height minus header (64px header)
+    height: 'calc(100vh - 64px)',
     position: 'sticky',
-    top: '64px', // 🟢 start below header
+    top: '64px',
     left: 0,
     overflow: 'hidden',
     zIndex: 99,
@@ -204,7 +204,7 @@ const styles = {
   },
 };
 
-// 🟣 Add hover effect globally
+
 const styleSheet = document.createElement('style');
 styleSheet.innerHTML = `
   li:hover {

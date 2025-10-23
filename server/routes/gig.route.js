@@ -24,7 +24,6 @@ router.put('/update/:id', verifyToken, async (req, res) => {
         if (!gig) {
             return res.status(404).json({ message: 'Gig not found.' });
         }
-        // Check if the user trying to update the gig is the one who created it
         if (gig.userRef.toString() !== req.user.id) {
             return res.status(403).json({ message: 'You can only update your own gigs.' });
         }

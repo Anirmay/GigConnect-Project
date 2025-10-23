@@ -87,17 +87,14 @@ app.use("/api/message", messageRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/payment", paymentRoutes);
 
-// ✅ Freelancer Review route added here
-// app.use("/api/freelancer-review", freelancerReviewRoutes);
 
-// ✅ Serve frontend from 'dist' (must exist inside your backend folder)
 app.use(express.static(path.join(__dirname, "dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-// ✅ Start server
+
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
