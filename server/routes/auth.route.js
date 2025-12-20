@@ -54,7 +54,12 @@ router.post('/login', async (req, res) => {
         const { password: hashedPassword, ...userData } = validUser._doc;
 
         res
-            .cookie('access_token', token, { httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) })
+            .cookie('access_token', token, {
+        httpOnly: true,
+        secure: true, // REQUIRED: for HTTPS (Render/Netlify)
+        sameSite: "none", // REQUIRED: for Cross-Site cookies
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    })
             .status(200)
             .json(userData); // <-- Send user data, not just a message
 
@@ -84,7 +89,7 @@ router.post('/forgot-password', async (req, res) => {
             },
         });
 
-        const resetURL = `http://localhost:5173/reset-password/${resetToken}`;
+        const resetURL = `https://gigconnect-project.netlify.app/reset-password/${resetToken}`;
         const mailOptions = {
             to: user.email,
             from: process.env.EMAIL_USER,
@@ -125,7 +130,10 @@ router.post('/reset-password/:token', async (req, res) => {
 
 // --- LOGOUT ROUTE ---
 router.post('/logout', (req, res) => {
-    res.clearCookie('access_token').status(200).json({ message: "Logout successful." });
+    res.clearCookie('access_token', {
+        sameSite: "none",
+        secure: true
+    }).status(200).json({ message: "Logout successful." });
 });
 
 module.exports = router;
