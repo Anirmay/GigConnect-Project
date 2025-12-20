@@ -54,7 +54,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://gigconnect-anirmay.vercel.app", // your frontend domain
+      "https://gigconnect-project.netlify.app" // ✅ ADD THIS: Your actual Netlify site
     ],
     credentials: true,
   })
