@@ -27,8 +27,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      "http://localhost:5173", // Local dev
-      "https://gigconnect-anirmay.vercel.app", // Production frontend URL
+      "http://localhost:5173",
+      "https://gigconnect-project.netlify.app" // 👈 MAKE SURE THIS LINE IS HERE
     ],
     methods: ["GET", "POST"],
     credentials: true,

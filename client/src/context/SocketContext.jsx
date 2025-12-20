@@ -15,6 +15,7 @@ export const SocketProvider = ({ children }) => {
                 query: {
                     userId: currentUser._id,
                 },
+                withCredentials: true
             });
             setSocket(newSocket);
 
