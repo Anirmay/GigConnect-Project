@@ -16,8 +16,8 @@ router.get('/me', verifyToken, async (req, res) => {
 });
 
 router.post('/', verifyToken, async (req, res) => {
-    if (req.user.role !== 'Freelancer') {
-        return res.status(403).json({ message: 'Only Freelancers can create a profile.' });
+    if (req.user.role.toLowerCase() !== 'freelancer') {
+    return res.status(403).json({ message: 'Only Freelancers can create a profile.' });
     }
     const { headline, bio, skills, portfolioLinks, hourlyRate } = req.body;
     const profileFields = {
