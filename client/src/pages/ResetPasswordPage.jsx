@@ -21,7 +21,7 @@ const ResetPasswordPage = () => {
         setMessage('');
         setError('');
         try {
-            const response = await axios.post(`http://localhost:8000/api/auth/reset-password/${token}`, { password });
+            const response = await axios.post(`https://gigconnect-project.onrender.com/api/auth/reset-password/${token}`, { password });
             setMessage(response.data.message);
             setTimeout(() => navigate('/auth'), 3000); // Redirect to login after 3 seconds
         } catch (err) {

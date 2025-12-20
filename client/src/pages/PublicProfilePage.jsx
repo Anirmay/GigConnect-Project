@@ -16,7 +16,7 @@ const PublicProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/profile/${userId}`);
+        const res = await axios.get(`https://gigconnect-project.onrender.com/api/profile/${userId}`);
         setProfile(res.data);
       } catch (err) {
         console.error(err);

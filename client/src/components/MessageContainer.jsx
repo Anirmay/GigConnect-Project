@@ -14,7 +14,7 @@ const MessageContainer = ({ selectedUser }) => {
         const fetchMessages = async () => {
             if (selectedUser) {
                 try {
-                    const res = await axios.get(`http://localhost:8000/api/message/${selectedUser._id}`, { withCredentials: true });
+                    const res = await axios.get(`https://gigconnect-project.onrender.com/api/message/${selectedUser._id}`, { withCredentials: true });
                     setMessages(res.data);
                 } catch (error) {
                     console.error("Failed to fetch messages", error);
@@ -46,7 +46,7 @@ const MessageContainer = ({ selectedUser }) => {
         if (!newMessage.trim()) return;
 
         try {
-            const res = await axios.post(`http://localhost:8000/api/message/send/${selectedUser._id}`, { message: newMessage }, { withCredentials: true });
+            const res = await axios.post(`https://gigconnect-project.onrender.com/api/message/send/${selectedUser._id}`, { message: newMessage }, { withCredentials: true });
             setMessages([...messages, res.data]);
             setNewMessage('');
         } catch (error) {

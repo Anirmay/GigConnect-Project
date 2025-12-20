@@ -24,7 +24,7 @@ const ProfilePage = () => {
 
         const fetchProfile = async () => {
             try {
-                const res = await axios.get('http://localhost:8000/api/profile/me', { withCredentials: true });
+                const res = await axios.get('https://gigconnect-project.onrender.com/api/profile/me', { withCredentials: true });
                 setProfileData({
                     ...res.data,
                     skills: res.data.skills.join(', '),
@@ -54,7 +54,7 @@ const ProfilePage = () => {
         setLoading(true);
         setError('');
         try {
-            const res = await axios.post('http://localhost:8000/api/profile', profileData, { withCredentials: true });
+            const res = await axios.post('https://gigconnect-project.onrender.com/api/profile', profileData, { withCredentials: true });
             console.log("Profile saved:", res.data);
             alert("Profile saved successfully!");
         } catch (err) {

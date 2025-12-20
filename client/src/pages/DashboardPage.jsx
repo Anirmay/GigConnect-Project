@@ -20,7 +20,7 @@ export default function DashboardPage() {
     if (currentUser.role?.toLowerCase() === 'client') {
       const fetchUserGigs = async () => {
         try {
-          const res = await axios.get('http://localhost:8000/api/gig/user/my-gigs', { withCredentials: true });
+          const res = await axios.get('https://gigconnect-project.onrender.com/api/gig/user/my-gigs', { withCredentials: true });
           setUserGigs(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
           console.error("Failed to fetch user's gigs", error);
@@ -38,7 +38,7 @@ export default function DashboardPage() {
   const handleDeleteGig = async (gigId) => {
     if (window.confirm('Are you sure you want to delete this gig?')) {
       try {
-        await axios.delete(`http://localhost:8000/api/gig/delete/${gigId}`, { withCredentials: true });
+        await axios.delete(`https://gigconnect-project.onrender.com/api/gig/delete/${gigId}`, { withCredentials: true });
         setUserGigs(prev => prev.filter(gig => gig._id !== gigId));
       } catch (error) {
         console.error('Failed to delete gig:', error);

@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         try {
-            await axios.post('http://localhost:8000/api/auth/logout', {}, { withCredentials: true });
+            await axios.post('https://gigconnect-project.onrender.com/api/auth/logout', {}, { withCredentials: true });
             setCurrentUser(null);
         } catch (error) {
             console.error("Logout failed:", error);

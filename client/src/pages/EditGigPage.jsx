@@ -21,7 +21,7 @@ const EditGigPage = () => {
         // Fetch the existing gig data when the page loads
         const fetchGig = async () => {
             try {
-                const res = await axios.get(`http://localhost:8000/api/gig/${id}`);
+                const res = await axios.get(`https://gigconnect-project.onrender.com/api/gig/${id}`);
                 setFormData(res.data);
             } catch (err) {
                 setError("Could not fetch gig data.");
@@ -40,7 +40,7 @@ const EditGigPage = () => {
         setLoading(true);
         setError(null);
         try {
-            await axios.put(`http://localhost:8000/api/gig/update/${id}`, formData, { withCredentials: true });
+            await axios.put(`https://gigconnect-project.onrender.com/api/gig/update/${id}`, formData, { withCredentials: true });
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update gig.');

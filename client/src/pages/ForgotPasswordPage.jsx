@@ -13,7 +13,7 @@ const ForgotPasswordPage = () => {
         setMessage('');
         setError('');
         try {
-            const response = await axios.post('http://localhost:8000/api/auth/forgot-password', { email });
+            const response = await axios.post('https://gigconnect-project.onrender.com/api/auth/forgot-password', { email });
             setMessage(response.data.message);
         } catch (err) {
             setError(err.response.data.message);

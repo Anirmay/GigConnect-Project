@@ -77,8 +77,14 @@ const Header = () => {
         .btn-primary:hover { background:#4338ca; transform: translateY(-2px); }
         .btn-link { color:#111827; text-decoration:none; font-weight:500; padding:6px 8px; }
 
-        /* Mobile */
-        .gc-mobile-toggle { display:none; background:transparent; border:none; font-size:20px; cursor:pointer; }
+  /* Mobile */
+  .gc-mobile-toggle { 
+    display: none; 
+    border: none; 
+    font-size: 24px; 
+    cursor: pointer;
+    color: inherit;
+  }
         .gc-mobile-menu { display:none; }
 
         /* Responsive */
@@ -133,40 +139,36 @@ const Header = () => {
 
         {/* Auth / actions */}
         <div className="gc-auth">
-          {/* mobile toggle */}
-          <button className="gc-mobile-toggle" aria-label="Toggle menu" onClick={toggleMobile}>
-            ☰
+          {/* Show theme toggle regardless of login status */}
+          <button className="btn-link" style={{ border: "none", background: "transparent", cursor: "pointer" }}>
+            {/* Theme toggle icon */}
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>
+            </svg>
           </button>
 
-          {!loading && (
+          {/* mobile toggle - shows hamburger or cross based on state */}
+          <button className="gc-mobile-toggle" aria-label="Toggle menu" onClick={toggleMobile}>
+            {mobileOpen ? <span aria-hidden className="gc-mobile-cross">×</span> : <span aria-hidden className="gc-mobile-hamb">☰</span>}
+          </button>
+
+          {/* Only show these elements for logged in users */}
+          {!loading && currentUser && (
             <>
-              {currentUser ? (
-                <>
-                  {currentUser.role === "Client" && (
-                    <Link to="/post-gig" className="btn-primary" onClick={() => setMobileOpen(false)}>
-                      Post a Gig
-                    </Link>
-                  )}
-                  <Link to="/dashboard" className="btn-link" onClick={() => setMobileOpen(false)}>
-                    Dashboard
-                  </Link>
-                  <Link to="/messages" className="btn-link" onClick={() => setMobileOpen(false)}>
-                    Messages
-                  </Link>
-                  <button onClick={handleLogout} className="btn-link" style={{ border: "none", background: "transparent", cursor: "pointer" }}>
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link to="/auth" className="btn-link" onClick={() => setMobileOpen(false)}>
-                    Log In
-                  </Link>
-                  <Link to="/auth" className="btn-primary" onClick={() => setMobileOpen(false)}>
-                    Sign Up
-                  </Link>
-                </>
+              {currentUser.role === "Client" && (
+                <Link to="/post-gig" className="btn-primary" onClick={() => setMobileOpen(false)}>
+                  Post a Gig
+                </Link>
               )}
+              <Link to="/dashboard" className="btn-link" onClick={() => setMobileOpen(false)}>
+                Dashboard
+              </Link>
+              <Link to="/messages" className="btn-link" onClick={() => setMobileOpen(false)}>
+                Messages
+              </Link>
+              <button onClick={handleLogout} className="btn-link" style={{ border: "none", background: "transparent", cursor: "pointer" }}>
+                Logout
+              </button>
             </>
           )}
         </div>

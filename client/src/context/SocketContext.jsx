@@ -11,7 +11,7 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (currentUser) {
-            const newSocket = io('http://localhost:8000', {
+            const newSocket = io('https://gigconnect-project.onrender.com', {
                 query: {
                     userId: currentUser._id,
                 },

@@ -31,7 +31,7 @@ const AuthPage = () => {
         setLoading(true);
         setError(null);
         try {
-            await axios.post('http://localhost:8000/api/auth/register', signUpData);
+            await axios.post('https://gigconnect-project.onrender.com/api/auth/register', signUpData);
             alert('Registration successful! Please sign in.');
             setIsSignUp(false);
             setLoading(false);
@@ -46,7 +46,7 @@ const AuthPage = () => {
         setLoading(true);
         setError(null);
         try {
-            const res = await axios.post('http://localhost:8000/api/auth/login', signInData, { withCredentials: true });
+            const res = await axios.post('https://gigconnect-project.onrender.com/api/auth/login', signInData, { withCredentials: true });
             
 
             setCurrentUser(res.data);

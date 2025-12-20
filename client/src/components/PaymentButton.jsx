@@ -6,7 +6,7 @@ export default function PaymentButton({ amount }) {
     try {
       // 1. Create order on backend
       const { data: order } = await axios.post(
-        "http://localhost:8000/api/payment/order",
+        "https://gigconnect-project.onrender.com/api/payment/order",
         { amount }
       );
 
@@ -20,7 +20,7 @@ export default function PaymentButton({ amount }) {
         order_id: order.id,
         handler: async function (response) {
           // 3. Verify payment on backend
-          await axios.post("http://localhost:8000/api/payment/verify", response);
+          await axios.post("https://gigconnect-project.onrender.com/api/payment/verify", response);
           alert("✅ Payment Successful!");
         },
         prefill: {

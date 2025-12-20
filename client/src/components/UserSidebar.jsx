@@ -13,7 +13,7 @@ const UserSidebar = ({ onSelectUser }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get('http://localhost:8000/api/users', { withCredentials: true });
+        const res = await axios.get('https://gigconnect-project.onrender.com/api/users', { withCredentials: true });
         setUsers(res.data);
       } catch (error) {
         console.error("Failed to fetch users", error);

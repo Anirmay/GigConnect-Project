@@ -60,7 +60,7 @@ const FindWorkPage = () => {
     const fetchGigs = async () => {
       try {
         setLoading(true);
-        const res = await axios.get('http://localhost:8000/api/gig');
+        const res = await axios.get('https://gigconnect-project.onrender.com/api/gig');
         setGigs(res.data);
         setFilteredGigs(res.data);
       } catch (err) {

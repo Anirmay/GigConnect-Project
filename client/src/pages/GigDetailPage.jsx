@@ -21,8 +21,8 @@ const GigDetailPage = () => {
             try {
                 setLoading(true);
                 const [gigRes, reviewRes] = await Promise.all([
-                    axios.get(`http://localhost:8000/api/gig/${id}`),
-                    axios.get(`http://localhost:8000/api/review/${id}`)
+                    axios.get(`https://gigconnect-project.onrender.com/api/gig/${id}`),
+                    axios.get(`https://gigconnect-project.onrender.com/api/review/${id}`)
                 ]);
                 setGig(gigRes.data);
                 setReviews(reviewRes.data);
@@ -44,11 +44,11 @@ const GigDetailPage = () => {
         }
         try {
             await axios.post(
-                'http://localhost:8000/api/review/create',
+                'https://gigconnect-project.onrender.com/api/review/create',
                 { gigId: id, rating, comment },
                 { withCredentials: true }
             );
-            const reviewRes = await axios.get(`http://localhost:8000/api/review/${id}`);
+            const reviewRes = await axios.get(`https://gigconnect-project.onrender.com/api/review/${id}`);
             setReviews(reviewRes.data);
             setComment('');
             setRating(5);

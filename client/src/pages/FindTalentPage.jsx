@@ -27,7 +27,7 @@ const FindTalentPage = () => {
   useEffect(() => {
     const fetchFreelancers = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/users/freelancers');
+        const response = await axios.get('https://gigconnect-project.onrender.com/api/users/freelancers');
         setProfiles(response.data);
         setFilteredProfiles(response.data);
       } catch (err) {

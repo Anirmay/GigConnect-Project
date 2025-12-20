@@ -32,7 +32,7 @@ const CreateGigPage = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post('http://localhost:8000/api/gig/create', formData, { withCredentials: true });
+            const response = await axios.post('https://gigconnect-project.onrender.com/api/gig/create', formData, { withCredentials: true });
             console.log('Gig created successfully:', response.data);
             navigate('/');
         } catch (err) {
