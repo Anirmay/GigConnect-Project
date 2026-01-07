@@ -28,7 +28,7 @@ const io = new Server(server, {
   cors: {
     origin: [
       "http://localhost:5173",
-      "https://gigconnect-project.netlify.app" // 👈 MAKE SURE THIS LINE IS HERE
+      "https://anirmay-gigconnect.netlify.app"
     ],
     methods: ["GET", "POST"],
     credentials: true,
@@ -54,7 +54,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://gigconnect-project.netlify.app" // ✅ ADD THIS: Your actual Netlify site
+      "https://anirmay-gigconnect.netlify.app"
     ],
     credentials: true,
   })
